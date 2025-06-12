@@ -3,7 +3,7 @@ const game = (function () {
     
     //Create GameBoard
     const gameBoard = (function () {
-    	let playingBoard = ['', '', '', '', '', '', '', '', '']
+    	let playingBoard = ['', '', '', '', '', '', '', '', ''];
         
         const getBoard = () =>  {
             return playingBoard;
@@ -57,8 +57,13 @@ const game = (function () {
             	playingBoard[position] = marker;
             }
         }
+
+        //Clear game board to restart the game
+        const clearBoard = () => {
+            playingBoard = ['', '', '', '', '', '', '', '', ''];
+        }
         
-        return {getBoard, updateBoard, checkGameEnd};
+        return {getBoard, checkGameEnd, updateBoard, clearBoard};
 	})();
     
     
@@ -101,7 +106,13 @@ const game = (function () {
             return [gameBoard.getBoard(), gameBoard.checkGameEnd(), marker];
         }
 
-        return {playerAction};
+        //Reset the game
+        const resetGame = () => {
+            gameBoard.clearBoard();
+            currentPlayer = playerOne;
+        }
+
+        return {playerAction, resetGame};
     })(gameBoard, playerOne, playerTwo);
     
     return { gameManager };
@@ -124,5 +135,15 @@ gameDisplay.addEventListener("click", (e) => {
             endText.textContent = `Player ${results[2]} wins!`;
         }
     }
-    
 });
+
+const resetBtn = document.querySelector("#reset");
+resetBtn.addEventListener("click", (e) => {
+    let cells = gameDisplay.children;
+    for (let cell of cells) {
+        cell.firstElementChild.textContent = "";
+    }
+    document.querySelector("#results").textContent = "";
+    game.gameManager.resetGame();
+});
+
