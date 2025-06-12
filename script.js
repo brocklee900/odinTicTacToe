@@ -68,18 +68,29 @@ const game = (function () {
     
     
     //Create Players
-    function makePlayer(playerMarker) {
+    function makePlayer(playerName, playerMarker) {
+        let name = playerName;
     	const marker = playerMarker;
 
         //return this player's marker
         const getMarker = () => {
         	return marker;
         }
-        return { getMarker };
+
+        //return player's name
+        const getName = () => {
+            return name;
+        }
+
+        //Change player name
+        const setName = (newName) => {
+            name = newName;
+        }
+        return { getMarker, getName, setName };
     };
     
-    const playerOne = makePlayer("x");
-    const playerTwo = makePlayer("o");
+    const playerOne = makePlayer("Player One", "x");
+    const playerTwo = makePlayer("Player Two", "o");
     
     //Create GameManager
     //The GameManager will handle the gameboard and player objects so
@@ -98,12 +109,12 @@ const game = (function () {
         
         //Execute a player's action and update board
         const playerAction = (position) => {
-            let marker = currentPlayer.getMarker();
+            let lastPlayer = currentPlayer.getName();
             if (gameBoard.checkGameEnd() != 1) {
-                gameBoard.updateBoard(marker, position);
+                gameBoard.updateBoard(currentPlayer.getMarker(), position);
                 changeTurn();
             }
-            return [gameBoard.getBoard(), gameBoard.checkGameEnd(), marker];
+            return [gameBoard.getBoard(), gameBoard.checkGameEnd(), lastPlayer];
         }
 
         //Reset the game
@@ -132,7 +143,7 @@ gameDisplay.addEventListener("click", (e) => {
         if (results[1] == -1) {
             endText.textContent = "Tie Game!";
         } else if (results[1] == 1) {
-            endText.textContent = `Player ${results[2]} wins!`;
+            endText.textContent = `${results[2]} wins!`;
         }
     }
 });
