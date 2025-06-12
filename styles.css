@@ -27,10 +27,9 @@ body {
     align-items: center;
     justify-content: center;
     background-color: white;
+
+    font-size: 2rem;
     height: 100%;
     width: 100%;
 }
 
-#gameContainer > .gameCell > p {
-    font-size: 3rem;
-}

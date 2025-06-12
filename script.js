@@ -1,10 +1,13 @@
+
 const game = (function () {
     
     //Create GameBoard
     const gameBoard = (function () {
     	let playingBoard = ['', '', '', '', '', '', '', '', '']
         
-        const printBoard = () => console.log(playingBoard);
+        const getBoard = () =>  {
+            return playingBoard;
+        }
         
         //Check board for tie game
         const checkGameTie = () => {
@@ -55,7 +58,7 @@ const game = (function () {
             }
         }
         
-        return {printBoard, updateBoard, checkGameEnd};
+        return {getBoard, updateBoard, checkGameEnd};
 	})();
     
     
@@ -79,7 +82,6 @@ const game = (function () {
     //The GameManager will handle the gameboard and player objects so
     //that they don't need to be accessed outside of this factory function
     const gameManager = (function(gameBoard, playerOne, playerTwo) {
-    	const printBoard = () => gameBoard.printBoard();
         let currentPlayer = playerOne;
         
         //Switch between the two players' turn
@@ -94,22 +96,26 @@ const game = (function () {
         //Execute a player's action and update board
         const playerAction = (position) => {
         	gameBoard.updateBoard(currentPlayer.getMarker(), position);
-            gameBoard.printBoard();
             console.log(gameBoard.checkGameEnd());
             changeTurn();
         }
-        return {playerAction};
+
+        //Return current Board
+        const getBoard = () => {
+           return gameBoard.getBoard();
+        }
+        return {playerAction, getBoard};
     })(gameBoard, playerOne, playerTwo);
     
     return { gameManager };
 })();
 
-game.gameManager.playerAction(0);
-game.gameManager.playerAction(2);
-game.gameManager.playerAction(1);
-game.gameManager.playerAction(3);
-game.gameManager.playerAction(5);
-game.gameManager.playerAction(4);
-game.gameManager.playerAction(6);
-game.gameManager.playerAction(8);
-game.gameManager.playerAction(7);
+const gameDisplay = document.querySelector("#gameContainer");
+gameDisplay.addEventListener("click", (e) => {
+    game.gameManager.playerAction(+e.target.id);
+    let board = game.gameManager.getBoard();
+    let cells = gameDisplay.children;
+
+    cells[+e.target.id].firstElementChild.textContent = board[+e.target.id];
+    
+});
