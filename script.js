@@ -65,14 +65,12 @@ const game = (function () {
     //Create Players
     function makePlayer(playerMarker) {
     	const marker = playerMarker;
-        let score = 0;
-        
-        const printStatus = () => console.log(marker, score);
+
         //return this player's marker
         const getMarker = () => {
         	return marker;
         }
-        return { printStatus, getMarker };
+        return { getMarker };
     };
     
     const playerOne = makePlayer("x");
@@ -95,16 +93,15 @@ const game = (function () {
         
         //Execute a player's action and update board
         const playerAction = (position) => {
-        	gameBoard.updateBoard(currentPlayer.getMarker(), position);
-            console.log(gameBoard.checkGameEnd());
-            changeTurn();
+            let marker = currentPlayer.getMarker();
+            if (gameBoard.checkGameEnd() != 1) {
+                gameBoard.updateBoard(marker, position);
+                changeTurn();
+            }
+            return [gameBoard.getBoard(), gameBoard.checkGameEnd(), marker];
         }
 
-        //Return current Board
-        const getBoard = () => {
-           return gameBoard.getBoard();
-        }
-        return {playerAction, getBoard};
+        return {playerAction};
     })(gameBoard, playerOne, playerTwo);
     
     return { gameManager };
@@ -112,10 +109,20 @@ const game = (function () {
 
 const gameDisplay = document.querySelector("#gameContainer");
 gameDisplay.addEventListener("click", (e) => {
-    game.gameManager.playerAction(+e.target.id);
-    let board = game.gameManager.getBoard();
-    let cells = gameDisplay.children;
+    let endText = document.querySelector("#results");
 
-    cells[+e.target.id].firstElementChild.textContent = board[+e.target.id];
+    if (endText.textContent == "") {
+        results = game.gameManager.playerAction(+e.target.id);
+        let board = results[0];
+        let cells = gameDisplay.children;
+
+        cells[+e.target.id].firstElementChild.textContent = board[+e.target.id];
+
+        if (results[1] == -1) {
+            endText.textContent = "Tie Game!";
+        } else if (results[1] == 1) {
+            endText.textContent = `Player ${results[2]} wins!`;
+        }
+    }
     
 });

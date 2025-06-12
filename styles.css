@@ -33,3 +33,9 @@ body {
     width: 100%;
 }
 
+#results {
+    margin-top: 20px;
+
+    width: 300px;
+    text-align: center;
+}
