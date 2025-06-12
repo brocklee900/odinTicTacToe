@@ -4,6 +4,8 @@
     margin: 0px;
 }
 
+
+/* main display of game board and buttons */
 body {
     height: 300px;
     width: 300px
@@ -42,11 +44,31 @@ body {
     gap: 20px
 }
 
-#bottomContainer > #reset {
+#bottomContainer > button {
     font-size: 1rem;
     padding: 10px;
 }
 
 #bottomContainer > #results {
     font-size: 2rem;
+}
+
+/* dialog display and elements */
+#nameChangeDialog {
+    height: 300px;
+    width: 300px;
+
+    padding: 10px;
+}
+
+#nameChangeDialog > *{
+    padding: 10px;
+}
+
+#nameChangeDialog input {
+    padding: 2px;
+}
+
+#nameChangeDialog button {
+    padding: 5px;
 }

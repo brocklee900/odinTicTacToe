@@ -123,7 +123,13 @@ const game = (function () {
             currentPlayer = playerOne;
         }
 
-        return {playerAction, resetGame};
+        //Update player names
+        const updateNames = (name1, name2) => {
+            playerOne.setName(name1);
+            playerTwo.setName(name2);
+        }
+
+        return {playerAction, resetGame, updateNames};
     })(gameBoard, playerOne, playerTwo);
     
     return { gameManager };
@@ -148,13 +154,34 @@ gameDisplay.addEventListener("click", (e) => {
     }
 });
 
-const resetBtn = document.querySelector("#reset");
-resetBtn.addEventListener("click", (e) => {
+document.querySelector("#reset").addEventListener("click", (e) => {
     let cells = gameDisplay.children;
     for (let cell of cells) {
         cell.firstElementChild.textContent = "";
     }
     document.querySelector("#results").textContent = "";
     game.gameManager.resetGame();
+});
+
+const dialog = document.querySelector("#nameChangeDialog");
+document.querySelector("#editNames").addEventListener("click", (e) => {
+    dialog.showModal();
+});
+document.querySelector("#close").addEventListener("click", (e) => {
+    dialog.close();
+});
+document.querySelector("#changeNames").addEventListener("click", (e) => {
+    let p1 = document.querySelector("#playerOne");
+    let p2 = document.querySelector("#playerTwo");
+
+    if (p1.value == "") {
+        p1.value = "Player One";
+    }
+    if (p2.value == "") {
+        p2.value = "Player Two";
+    }
+
+    game.gameManager.updateNames(p1.value, p2.value);
+    dialog.close();
 });
 

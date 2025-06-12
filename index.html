@@ -22,8 +22,24 @@
         
         <div id="bottomContainer">
             <button id="reset">Reset</button>
+            <button id="editNames">Change Player Names</button>
             <p id="results"></p>
         </div>
+        
+        <dialog id="nameChangeDialog" closeby="none">
+            <div class="inputPair">
+                <label for="playerOne">Player 'x'</label>
+                <input id="playerOne" type="text" value="Player One">
+            </div>
+            <div class="inputPair">
+                <label for="playerTwo">Player 'o'</label>
+                <input id="playerTwo" type="text" value="Player Two">
+            </div>
+            <div>
+                <button id="changeNames">Change</button>
+                <button id="close">Close</button>
+            </div>
+        </dialog>
 
         <script src="./script.js"></script>
     </body>
