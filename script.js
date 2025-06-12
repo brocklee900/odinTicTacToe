@@ -2,14 +2,14 @@ const game = (function () {
     
     //Create GameBoard
     const gameBoard = (function () {
-    	let playingBoard = [
-        [-1, -1, -1],
-        [-1, -1, -1],
-        [-1, -1, -1]
-        ];
+    	let playingBoard = ['-', '-', '-', '-', '-', '-', '-', '-', '-']
         
         const printBoard = () => console.log(playingBoard);
-        return {printBoard};
+        //Update Board when player makes a move
+        const updateBoard = (marker, position) => {
+        	playingBoard[position] = marker;
+        }
+        return {printBoard, updateBoard};
 	})();
     
     
@@ -19,29 +19,45 @@ const game = (function () {
         let score = 0;
         
         const printStatus = () => console.log(marker, score);
-        const addScore = () => score++;
-        return {printStatus, addScore};
+        //return this player's marker
+        const getMarker = () => {
+        	return marker;
+        }
+        return { printStatus, getMarker };
     };
     
     const playerOne = makePlayer("x");
     const playerTwo = makePlayer("o");
     
     //Create GameManager
-    const gameManager = (function(gameBoard) {
+    //The GameManager will handle the gameboard and player objects so
+    //that they don't need to be accessed outside of this factory function
+    const gameManager = (function(gameBoard, playerOne, playerTwo) {
     	const printBoard = () => gameBoard.printBoard();
-        return {printBoard};
-    })(gameBoard);
+        let currentPlayer = playerOne;
+        
+        //Switch between the two players' turn
+        const changeTurn = () => {
+        	if (currentPlayer == playerOne) {
+            	currentPlayer = playerTwo;
+            } else {
+            	currentPlayer = playerOne;
+            }
+        }
+        
+        //Execute a player's action and update board
+        const playerAction = (position) => {
+        	gameBoard.updateBoard(currentPlayer.getMarker(), position);
+            gameBoard.printBoard();
+            changeTurn();
+        }
+        return {playerAction};
+    })(gameBoard, playerOne, playerTwo);
     
-    return { gameBoard, playerOne, playerTwo, gameManager };
-
+    return { gameManager };
 })();
 
-game.gameBoard.printBoard();
-game.playerOne.printStatus();
-game.playerOne.addScore();
-game.playerOne.printStatus();
-game.playerTwo.printStatus();
-game.playerTwo.addScore();
-game.playerTwo.addScore();
-game.playerTwo.printStatus();
-game.gameManager.printBoard();
+game.gameManager.playerAction(1);
+game.gameManager.playerAction(5);
+game.gameManager.playerAction(4);
+game.gameManager.playerAction(8);
