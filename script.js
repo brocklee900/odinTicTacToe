@@ -97,6 +97,7 @@ const game = (function () {
     //that they don't need to be accessed outside of this factory function
     const gameManager = (function(gameBoard, playerOne, playerTwo) {
         let currentPlayer = playerOne;
+        let gameStatus = false;
         
         //Switch between the two players' turn
         const changeTurn = () => {
@@ -106,21 +107,38 @@ const game = (function () {
             	currentPlayer = playerOne;
             }
         }
+
+        const toggleGameStatus = () => {
+            gameStatus = !gameStatus;
+        }
         
         //Execute a player's action and update board
         const playerAction = (position) => {
-            let lastPlayer = currentPlayer.getName();
-            if (gameBoard.checkGameEnd() != 1) {
+            if (gameStatus) {
                 gameBoard.updateBoard(currentPlayer.getMarker(), position);
-                changeTurn();
+
+                if (gameBoard.checkGameEnd() != 0) {
+                    toggleGameStatus();
+                } else {
+                    changeTurn();
+                }
             }
-            return [gameBoard.getBoard(), gameBoard.checkGameEnd(), lastPlayer];
+            return [gameBoard.getBoard(), gameBoard.checkGameEnd(), currentPlayer.getName()];
+        }
+
+        const startGame = () => {
+            if (!gameStatus) {
+                toggleGameStatus();
+            }
         }
 
         //Reset the game
         const resetGame = () => {
             gameBoard.clearBoard();
             currentPlayer = playerOne;
+            if (gameStatus) {
+                toggleGameStatus();
+            }
         }
 
         //Update player names
@@ -129,7 +147,7 @@ const game = (function () {
             playerTwo.setName(name2);
         }
 
-        return {playerAction, resetGame, updateNames};
+        return {playerAction, startGame, resetGame, updateNames };
     })(gameBoard, playerOne, playerTwo);
     
     return { gameManager };
@@ -154,6 +172,9 @@ gameDisplay.addEventListener("click", (e) => {
     }
 });
 
+document.querySelector("#start").addEventListener("click", (e) => {
+    game.gameManager.startGame();
+});
 document.querySelector("#reset").addEventListener("click", (e) => {
     let cells = gameDisplay.children;
     for (let cell of cells) {
@@ -184,4 +205,3 @@ document.querySelector("#changeNames").addEventListener("click", (e) => {
     game.gameManager.updateNames(p1.value, p2.value);
     dialog.close();
 });
-
